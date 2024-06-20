@@ -54,6 +54,7 @@
 
                 if (response.ok) {
                     const result = await response.json();
+                    console.log(result)
                     document.getElementById('area').innerText = result.area;
                     document.getElementById('recNum').innerText = recNum;
                     drawGraph(parseInt(recNum), parseInt(addValue), funcGraph);
