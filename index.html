@@ -52,7 +52,7 @@
                     body: JSON.stringify(data)
                 });
 
-                if (response.ok) {
+                if (response.status == 200) {
                     const result = await response.json();
                     console.log(result)
                     document.getElementById('area').innerText = result.area;
