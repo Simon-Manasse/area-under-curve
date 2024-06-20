@@ -161,29 +161,6 @@
             Plotly.newPlot('plot', [curveTrace, areaTrace], layout);
         }
 
-        const url = "https://area-under-curve.azurewebsites.net/api/HttpTrigger1?code=7xYMcpV6E1swnzW1xOofQR0VYqcV44i3DBUMg3Jn5iXIAzFuT9i6gg%3D%3D";
-
-        const postData = {
-            rectangles: 100,
-            addValue: 50,
-            funcGraph: "quadratic"
-        };
-
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(postData)
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-
     </script>
 </body>
 
