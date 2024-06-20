@@ -37,26 +37,33 @@
 
             const url = "https://area-under-curve.azurewebsites.net/api/HttpTrigger1?code=7xYMcpV6E1swnzW1xOofQR0VYqcV44i3DBUMg3Jn5iXIAzFuT9i6gg%3D%3D";
 
-            const postData = {
-                rectangles: 100,
-                addValue: 50,
-                funcGraph: "quadratic"
+            const data = {
+                rectangles: parseInt(recNum),
+                addValue: parseInt(addValue),
+                funcGraph: funcGraph
             };
 
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(postData)
-            })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Success:', data);
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
                 });
+                console.log("holle")
+                if (response.status == 200) {
+                    const result = await response.json();
+                    console.log(result)
+                    document.getElementById('area').innerText = result.area;
+                    document.getElementById('recNum').innerText = recNum;
+                    drawGraph(parseInt(recNum), parseInt(addValue), funcGraph);
+                } else {
+                    console.error('HTTP error', response.status, response.statusText);
+                }
+            } catch (error) {
+                console.error('Fetch error', error);
+            }
         }
 
         function quadraticFunction(x, addValue) {
