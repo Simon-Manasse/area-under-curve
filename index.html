@@ -1,11 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Area uner the curve</title>
+    <title>Area under Curve Visualization</title>
+    <!-- Include Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="./main.js"></script>
 </head>
 <body>
-    <h1>IT'S working lmaoooooo</h1>
+    <p>What function do you want to calculate?</p>
+    <select id="function">
+        <option value="quadratic" selected>Quadratic</option>
+        <option value="linear">Linear</option>
+        <option value="sinus">Sinus</option>
+        <option value="log">Log</option>
+    </select>
+    <p>What should be the top of the function?</p>
+    <input type="number" name="" id="graphTop" placeholder="50">
+    <p>How many rectangles do you want to use?</p> 
+    <input type="number" name="" id="rectangles" placeholder="100"><br>
+    <button onclick="update()">Update graph</button>
+    <!-- Plotly.js will render the plot here -->
+    <div id="plot"></div>
+    <p>The area under the curve is approximately: <span id="area"></span>cm<sup>2</sup> calculated from <span id="recNum"></span> rectangles</p>
 </body>
 </html>
