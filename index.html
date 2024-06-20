@@ -4,7 +4,6 @@
     <title>Area under Curve Visualization</title>
     <!-- Include Plotly.js -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <script src="./main.js"></script>
 </head>
 <body>
     <p>What function do you want to calculate?</p>
@@ -22,5 +21,141 @@
     <!-- Plotly.js will render the plot here -->
     <div id="plot"></div>
     <p>The area under the curve is approximately: <span id="area"></span>cm<sup>2</sup> calculated from <span id="recNum"></span> rectangles</p>
+
+    <script>
+        window.addEventListener('load', () => {
+            drawGraph(100, 50, "quadratic");
+        });
+
+        async function update() {
+            const recNum = document.getElementById('rectangles').value;
+            const addValue = document.getElementById('graphTop').value;
+            const funcGraph = document.getElementById('function').value;
+
+            const url = "https://area-under-curve.azurewebsites.net/api/HttpTrigger1?code=7xYMcpV6E1swnzW1xOofQR0VYqcV44i3DBUMg3Jn5iXIAzFuT9i6gg%3D%3D";
+
+            const data = {
+                rectangles: parseInt(recNum),
+                addValue: parseInt(addValue),
+                funcGraph: funcGraph
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    document.getElementById('area').innerText = result.area;
+                    document.getElementById('recNum').innerText = recNum;
+                    drawGraph(parseInt(recNum), parseInt(addValue), funcGraph);
+                } else {
+                    console.error('HTTP error', response.status, response.statusText);
+                }
+            } catch (error) {
+                console.error('Fetch error', error);
+            }
+        }
+
+        function quadraticFunction(x, addValue) {
+            return -Math.pow(x, 2) + addValue;
+        }
+
+        function sinusFunction(x, addValue) {
+            return Math.sin(x) + addValue;
+        }
+
+        function logFunction(x, addValue) {
+            return Math.log(x) + addValue;
+        }
+
+        function drawGraph(rectangles, addValue, funcGraph) {
+            var a = -100; 
+            var b = 100;
+            var numPoints = rectangles;
+
+            var xValues = [];
+            var yValues = [];
+            var i = a;
+            while (i <= b) {
+                var y = 0;
+                switch (funcGraph) {
+                    case "quadratic":
+                        y = quadraticFunction(i, addValue);
+                        break;
+                    case "linear":
+                        y = i + addValue;
+                        break;
+                    case "sinus":
+                        y = sinusFunction(i, addValue);
+                        break;
+                    case "log":
+                        y = logFunction(i, addValue);
+                        break;
+                    default:
+                        y = quadraticFunction(i, addValue);
+                        break;
+                }
+                if (y >= 0) {
+                    xValues.push(i);
+                    yValues.push(y);
+                }
+                i += (b - a) / numPoints;
+            }
+
+            var curveTrace = {
+                x: xValues,
+                y: yValues,
+                mode: 'lines',
+                name: 'Curve'
+            };
+
+            var area = 0;
+            var rectangles = [];
+            for (var j = 1; j < xValues.length; j++) {
+                var x0 = xValues[j - 1];
+                var x1 = xValues[j];
+                var y0 = yValues[j - 1];
+                var y1 = yValues[j];
+                var rectArea = (x1 - x0) * Math.min(y0, y1);
+                area += rectArea;
+
+                var rect = {
+                    type: 'rect',
+                    x0: x0,
+                    y0: 0,
+                    x1: x1,
+                    y1: Math.min(y0, y1),
+                    fillcolor: 'rgba(0, 0, 128, 0.5)',
+                    line: { width: 0 }
+                };
+                rectangles.push(rect);
+            }
+
+            var areaTrace = {
+                x: [xValues[0], xValues[xValues.length - 1]],
+                y: [0, 0],
+                fill: 'tozeroy',
+                fillcolor: 'rgba(0, 128, 128, 0.5)',
+                mode: 'none',
+                name: 'Area under Curve'
+            };
+
+            var layout = {
+                title: 'Area under Curve Visualization',
+                xaxis: { title: 'x in cm' },
+                yaxis: { title: 'y in cm' },
+                showlegend: true,
+                shapes: rectangles
+            };
+
+            Plotly.newPlot('plot', [curveTrace, areaTrace], layout);
+        }
+    </script>
 </body>
 </html>
