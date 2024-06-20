@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Area under Curve Visualization</title>
     <!-- Include Plotly.js -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
+
 <body>
     <p>What function do you want to calculate?</p>
     <select id="function">
@@ -15,12 +17,13 @@
     </select>
     <p>What should be the top of the function?</p>
     <input type="number" name="" id="graphTop" placeholder="50">
-    <p>How many rectangles do you want to use?</p> 
+    <p>How many rectangles do you want to use?</p>
     <input type="number" name="" id="rectangles" placeholder="100"><br>
     <button onclick="update()">Update graph</button>
     <!-- Plotly.js will render the plot here -->
     <div id="plot"></div>
-    <p>The area under the curve is approximately: <span id="area"></span>cm<sup>2</sup> calculated from <span id="recNum"></span> rectangles</p>
+    <p>The area under the curve is approximately: <span id="area"></span>cm<sup>2</sup> calculated from <span
+            id="recNum"></span> rectangles</p>
 
     <script>
         window.addEventListener('load', () => {
@@ -75,7 +78,7 @@
         }
 
         function drawGraph(rectangles, addValue, funcGraph) {
-            var a = -100; 
+            var a = -100;
             var b = 100;
             var numPoints = rectangles;
 
@@ -156,6 +159,31 @@
 
             Plotly.newPlot('plot', [curveTrace, areaTrace], layout);
         }
+
+        const url = "https://area-under-curve.azurewebsites.net/api/HttpTrigger1?code=7xYMcpV6E1swnzW1xOofQR0VYqcV44i3DBUMg3Jn5iXIAzFuT9i6gg%3D%3D";
+
+        const postData = {
+            rectangles: 100,
+            addValue: 50,
+            funcGraph: "quadratic"
+        };
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(postData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+
     </script>
 </body>
+
 </html>
